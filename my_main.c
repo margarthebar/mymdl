@@ -67,6 +67,69 @@ void my_main( int polygons ) {
 
   for (i=0;i<lastop;i++) {  
     switch (op[i].opcode) {
+    case PUSH:
+      push(s);
+      break;
+    case POP:
+      pop(s);
+      break;
+    case MOVE:
+      tmp = make_translate(op[i].op.move.d[0],op[i].op.move.d[1],op[i].op.move.d[2]);
+      matrix_mult(tmp,s->data[s->top]);
+      break;
+    case SCALE:
+      tmp = make_scale(op[i].op.scale.d[0],op[i].op.scale.d[1],op[i].op.move.d[2]);
+      matrix_mult(tmp,s->data[s->top]);
+      break;
+    case ROTATE:
+      if(op[i].op.rotate.axis==0){
+	tmp = make_rotX(op[i].op.rotate.degrees);
+	matrix_mult(tmp,s->data[s->top]);
+      }else if(op[i].op.rotate.axis==1){
+	tmp = make_rotY(op[i].op.rotate.degrees);
+	matrix_mult(tmp,s->data[s->top]);
+      }else if(op[i].op.rotate.axis==2){
+	tmp = make_rotZ(op[i].op.rotate.degrees);
+	matrix_mult(tmp,s->data[s->top]);
+      }
+      break;
+    case BOX:
+      add_box(tmp, op[i].op.box.d0[0], op[i].op.box.d0[1], op[i].op.box.d0[2],
+	           op[i].op.box.d1[0], op[i].op.box.d1[1], op[i].op.box.d1[2]);
+      matrix_mult(s->data[s->top],tmp);
+      draw_polygons(tmp, t, g);
+      tmp->lastcol = 0;
+      break;
+    case SPHERE:
+      add_sphere(tmp, op[i].op.sphere.d[0], op[i].op.sphere.d[1], op[i].op.sphere.d[2],
+		 op[i].op.sphere.r, op[i].op.sphere.d[4]);
+      matrix_mult(s->data[s->top],tmp);
+      draw_polygons(tmp, t, g);
+      tmp->lastcol = 0;
+      break;
+    case TORUS:
+      add_sphere(tmp, op[i].op.torus.d[0], op[i].op.torus.d[1], op[i].op.torus.d[2],
+		 op[i].op.torus.r0, op[i].op.torus.r1);
+      matrix_mult(s->data[s->top],tmp);
+      draw_polygons(tmp, t, g);
+      tmp->lastcol = 0;
+      break;
+    case LINE:
+      add_edge(tmp, op[i].op.line.p0[0],op[i].op.line.p0[1],op[i].op.line.p0[1],
+		    op[i].op.line.p1[0],op[i].op.line.p1[1],op[i].op.line.p1[1]);
+      matrix_mult(s->data[s->top], tmp);
+      draw_lines(tmp, t, g);
+      tmp->lastcol = 0;
+      break;
+    case SAVE:
+      save_extension(t, op[i].op.save.p->name);
+      break;
+    case DISPLAY:
+      printf("Display (does not work on my computer)\n");
+      break;
+    default:
+      printf("Invalid command\n");
+      break;
     }
   }
 }
