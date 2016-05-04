@@ -1,0 +1,59 @@
+//body
+push
+move 250 300 0
+rotate y 50
+//rotate y 210
+//rotate x 5
+box -1 1 -1 2 2 2
+box -50 100 -25 100 200 50
+//left arm
+push
+move 75 75 0
+rotate x -45
+box -1 1 -1 2 2 2
+box -25 25 -25 50 100 50
+push
+move 0 -100 0
+box -1 1 -1 2 2 2
+box -25 25 -25 50 100 50
+//right arm
+pop
+pop
+push
+move -75 75 0
+rotate z 270
+box -1 1 -1 2 2 2
+box -25 25 -25 50 100 50
+push
+move 0 -100 0
+box -1 1 -1 2 2 2
+box -25 25 -25 50 100 50
+//left leg
+pop
+pop
+push
+move 25 -125 0
+box -1 1 -1 2 2 2
+box -25 25 -25 50 100 50
+push
+move 0 -100 0
+box -1 1 -1 2 2 2
+box -25 25 -25 50 100 50
+//right leg
+pop
+pop
+push
+move -25 -125 0
+rotate x 45
+box -1 1 -1 2 2 2
+box -25 25 -25 50 100 50
+push
+move 0 -100 0
+box -1 1 -1 2 2 2
+box -25 25 -25 50 100 50
+//head
+pop
+pop
+move 0 150 0
+sphere 0 0 -50 50
+save magbot.png

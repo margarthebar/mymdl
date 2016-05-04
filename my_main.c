@@ -64,6 +64,9 @@ void my_main( int polygons ) {
   s = new_stack();
   tmp = new_matrix(4, 1000);
   clear_screen( t );
+  g.red = 0;
+  g.blue = 0;
+  g.green = 255;
 
   for (i=0;i<lastop;i++) {  
     switch (op[i].opcode) {
@@ -75,22 +78,27 @@ void my_main( int polygons ) {
       break;
     case MOVE:
       tmp = make_translate(op[i].op.move.d[0],op[i].op.move.d[1],op[i].op.move.d[2]);
-      matrix_mult(tmp,s->data[s->top]);
+      matrix_mult(s->data[s->top],tmp);
+      copy_matrix(tmp,s->data[s->top]);
       break;
     case SCALE:
       tmp = make_scale(op[i].op.scale.d[0],op[i].op.scale.d[1],op[i].op.move.d[2]);
-      matrix_mult(tmp,s->data[s->top]);
+      matrix_mult(s->data[s->top],tmp);
+      copy_matrix(tmp,s->data[s->top]);
       break;
     case ROTATE:
       if(op[i].op.rotate.axis==0){
 	tmp = make_rotX(op[i].op.rotate.degrees);
-	matrix_mult(tmp,s->data[s->top]);
+        matrix_mult(s->data[s->top],tmp);
+	copy_matrix(tmp,s->data[s->top]);
       }else if(op[i].op.rotate.axis==1){
 	tmp = make_rotY(op[i].op.rotate.degrees);
-	matrix_mult(tmp,s->data[s->top]);
+        matrix_mult(s->data[s->top],tmp);
+	copy_matrix(tmp,s->data[s->top]);
       }else if(op[i].op.rotate.axis==2){
 	tmp = make_rotZ(op[i].op.rotate.degrees);
-	matrix_mult(tmp,s->data[s->top]);
+	matrix_mult(s->data[s->top],tmp);
+	copy_matrix(tmp,s->data[s->top]);
       }
       break;
     case BOX:
@@ -102,7 +110,7 @@ void my_main( int polygons ) {
       break;
     case SPHERE:
       add_sphere(tmp, op[i].op.sphere.d[0], op[i].op.sphere.d[1], op[i].op.sphere.d[2],
-		 op[i].op.sphere.r, op[i].op.sphere.d[4]);
+		 op[i].op.sphere.r, 10);
       matrix_mult(s->data[s->top],tmp);
       draw_polygons(tmp, t, g);
       tmp->lastcol = 0;
@@ -123,6 +131,7 @@ void my_main( int polygons ) {
       break;
     case SAVE:
       save_extension(t, op[i].op.save.p->name);
+      //op[i].op.save.p -> name
       break;
     case DISPLAY:
       printf("Display (does not work on my computer)\n");
